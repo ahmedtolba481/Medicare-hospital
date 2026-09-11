@@ -100,11 +100,11 @@ composer run dev
 
 `php artisan migrate:fresh --seed` creates stable demo records for local development. These credentials are not intended for production use.
 
-| Role | Email | Password |
-| --- | --- | --- |
-| Admin | `admin@medicare.test` | `Admin@12345` |
-| Doctor | `doctor.carter@medicare.test` | `Doctor@12345` |
-| Patient | `patient1@medicare.test` | `Patient@12345` |
+| Role    | Email                         | Password        |
+| ------- | ----------------------------- | --------------- |
+| Admin   | `admin@medicare.test`         | `Admin@12345`   |
+| Doctor  | `doctor.carter@medicare.test` | `Doctor@12345`  |
+| Patient | `patient1@medicare.test`      | `Patient@12345` |
 
 Additional seeded doctors and patients are available for testing appointment workflows.
 
