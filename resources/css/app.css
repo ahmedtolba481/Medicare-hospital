@@ -7,6 +7,8 @@
     --medicare-ink: #17324d;
     --medicare-muted: #63758a;
     --medicare-surface: #f5fafb;
+    --medicare-line: #dcebf0;
+    --medicare-shadow: 0 1rem 2.5rem rgba(25, 73, 91, 0.08);
 }
 
 body {
@@ -20,6 +22,20 @@ body {
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
+    line-height: 1.6;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--medicare-ink);
+    line-height: 1.18;
+}
+::selection {
+    background: #bce8ef;
+    color: var(--medicare-ink);
 }
 a {
     color: var(--medicare-primary);
@@ -109,6 +125,19 @@ a {
 }
 .section-padding {
     padding: 5.5rem 0;
+}
+.auth-page {
+    background:
+        radial-gradient(
+            circle at 14% 10%,
+            rgba(82, 197, 213, 0.16),
+            transparent 17rem
+        ),
+        linear-gradient(180deg, #f7fcfd 0%, var(--medicare-surface) 100%);
+    min-height: 70vh;
+}
+.auth-page .contact-card {
+    box-shadow: var(--medicare-shadow);
 }
 .section-heading {
     max-width: 620px;
@@ -254,7 +283,7 @@ a {
 .doctor-card,
 .contact-card {
     border: 0;
-    box-shadow: 0 0.6rem 2rem rgba(28, 71, 87, 0.08);
+    box-shadow: var(--medicare-shadow);
     height: 100%;
 }
 .feature-icon {
@@ -296,6 +325,17 @@ a {
     background: linear-gradient(135deg, #e4f5f8, #f9fcfd);
     border-bottom: 1px solid #d6eaee;
     padding: 4.5rem 0;
+    position: relative;
+}
+.page-header::after {
+    background: linear-gradient(90deg, var(--medicare-primary), #52c5d5);
+    border-radius: 999px;
+    bottom: 0;
+    content: "";
+    height: 0.25rem;
+    left: max(1rem, calc((100% - 1320px) / 2));
+    position: absolute;
+    width: 5rem;
 }
 .stat-card {
     background: #fff;
@@ -328,6 +368,13 @@ a {
 .form-select:focus {
     border-color: #69b7c8;
     box-shadow: 0 0 0 0.25rem rgba(12, 110, 138, 0.15);
+}
+textarea.form-control {
+    min-height: 8rem;
+}
+.form-check-input:checked {
+    background-color: var(--medicare-primary);
+    border-color: var(--medicare-primary);
 }
 @media (max-width: 991.98px) {
     .hero-content {
@@ -791,6 +838,7 @@ html {
     border: 1px solid #dcebf0 !important;
     border-radius: 1rem;
     box-shadow: 0 0.45rem 1.4rem rgba(28, 71, 87, 0.05);
+    overflow: hidden;
 }
 .app-panel-head {
     align-items: center;
@@ -807,6 +855,8 @@ html {
 .app-table {
     --bs-table-bg: transparent;
     --bs-table-hover-bg: #f4fbfc;
+    margin-bottom: 0;
+    min-width: 38rem;
 }
 .app-table thead th {
     background: #f3fafc;
@@ -956,11 +1006,20 @@ html {
 }
 .app-main .alert {
     border-radius: 0.85rem;
+    border: 0;
+    box-shadow: 0 0.35rem 1rem rgba(28, 71, 87, 0.06);
+}
+.app-main .alert p:last-child,
+.app-main .alert ul:last-child {
+    margin-bottom: 0;
 }
 .app-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
+}
+.app-actions .btn {
+    white-space: nowrap;
 }
 
 @media (min-width: 992px) {
@@ -988,9 +1047,54 @@ html {
     .app-sidebar.offcanvas-lg {
         background: #0d2a40;
     }
+    .access-layout {
+        gap: 2rem;
+        grid-template-columns: 1fr;
+        padding: 4rem 0;
+    }
+    .access-visual {
+        justify-self: start;
+    }
 }
 
 @media (max-width: 767.98px) {
+    .section-padding {
+        padding: 4rem 0;
+    }
+    .page-header {
+        padding: 3.5rem 0;
+    }
+    .page-header h1 {
+        font-size: 2.35rem;
+    }
+    .auth-page .contact-card {
+        padding: 1.5rem !important;
+    }
+    .access-layout {
+        min-height: auto;
+        padding: 3.25rem 0 4rem;
+    }
+    .access-copy h1 {
+        font-size: 2.25rem;
+    }
+    .access-visual {
+        border-radius: 1.25rem;
+        height: 16rem;
+        max-width: none;
+    }
+    .access-shield {
+        height: 6.5rem;
+        width: 5.75rem;
+    }
+    .access-shield-cross {
+        font-size: 3rem;
+    }
+    .app-panel {
+        border-radius: 0.85rem;
+    }
+    .app-panel.p-4 {
+        padding: 1.1rem !important;
+    }
     .app-main {
         padding: 1.1rem 0.85rem 2rem;
     }
@@ -999,6 +1103,9 @@ html {
     }
     .app-table-stack thead {
         display: none;
+    }
+    .app-table-stack {
+        min-width: 0;
     }
     .app-table-stack tr {
         background: #fff;
@@ -1026,5 +1133,14 @@ html {
     }
     .app-topbar-search input {
         max-width: 7rem;
+    }
+    .app-topbar {
+        padding: 0.65rem 0.85rem;
+    }
+    .app-topbar-tools {
+        gap: 0.35rem;
+    }
+    .app-user-chip {
+        padding-right: 0;
     }
 }
