@@ -1,13 +1,13 @@
 @extends('layouts.doctor', ['title' => 'My patients'])
 
 @section('doctor-content')
-    <div class="card border-0 shadow-sm p-4">
+    <div class="card app-panel p-4">
         <h2 class="h4 mb-3">Patients assigned through your appointments</h2>
         @if ($patients->isEmpty())
-            <p class="text-secondary">No patients are assigned to you yet.</p>
+            <x-dashboard.empty-state title="No patients found" message="No patients are assigned to you yet." icon="users" />
         @else
             <div class="table-responsive">
-                <table class="table align-middle">
+                <table class="table app-table align-middle">
                     <thead><tr><th scope="col">Patient</th><th scope="col">Contact</th><th scope="col">Appointments with you</th></tr></thead>
                     <tbody>
                         @foreach ($patients as $patient)

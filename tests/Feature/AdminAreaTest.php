@@ -35,6 +35,7 @@ class AdminAreaTest extends TestCase
             ['get', '/admin/appointments'], ['get', '/admin/appointments/'.$visit->id],
             ['get', '/admin/messages'], ['get', '/admin/messages/'.$message->id],
             ['patch', '/admin/messages/'.$message->id], ['delete', '/admin/messages/'.$message->id],
+            ['get', '/admin/profile'], ['patch', '/admin/profile'],
         ];
         foreach ($requests as [$method, $url]) {
             $response = $this->{$method}($url);
@@ -61,8 +62,9 @@ class AdminAreaTest extends TestCase
 
         $this->actingAs($admin)->get(route('admin.dashboard'))->assertOk()->assertViewHas('statistics', [
             'Total patients' => 1, 'Total doctors' => 2, 'Total departments' => 2,
-            'Total appointments' => 2, 'Pending appointments' => 1, 'Unread messages' => 1,
-        ])->assertSeeText([$first->doctor->user->name, $second->doctor->user->name]);
+            'Total appointments' => 2, 'Pending appointments' => 1, 'Confirmed appointments' => 1, 'Unread messages' => 1,
+        ])->assertSeeText([$first->doctor->user->name, $second->doctor->user->name, 'Doctors', 'Departments', 'Patients', 'Appointments', 'Messages', 'Profile', 'Logout'])
+            ->assertDontSee('Thoughtful, evidence-based care for our community');
         $this->get(route('admin.patients.index'))->assertOk()->assertViewHas('patients', fn ($patients): bool => $patients->total() === 1 && $patients->first()->appointments_count === 2);
         $this->get(route('admin.patients.show', $patient))->assertOk()->assertSeeText([$first->doctor->user->name, $second->doctor->user->name, $patient->email]);
         $this->get(route('admin.patients.show', $admin))->assertNotFound();
@@ -138,16 +140,34 @@ class AdminAreaTest extends TestCase
     public function test_empty_lists_and_forms_render(): void
     {
         $this->actingAs(User::factory()->create(['role' => 'admin']));
-        foreach (['dashboard', 'doctors.index', 'doctors.create', 'departments.index', 'departments.create', 'patients.index', 'appointments.index', 'messages.index'] as $name) {
+        foreach (['dashboard', 'doctors.index', 'doctors.create', 'departments.index', 'departments.create', 'patients.index', 'appointments.index', 'messages.index', 'profile'] as $name) {
             $this->get(route('admin.'.$name))->assertOk();
         }
+    }
+
+    public function test_admin_can_update_profile_without_changing_role(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'email' => 'admin.profile@example.test']);
+
+        $this->actingAs($admin)->patch(route('admin.profile.update'), [
+            'name' => 'Hospital Admin',
+            'email' => 'admin.profile@example.test',
+            'phone' => '555-0100',
+        ])->assertRedirect(route('admin.profile'))->assertSessionHas('status');
+
+        $this->assertDatabaseHas('users', [
+            'id' => $admin->id,
+            'name' => 'Hospital Admin',
+            'phone' => '555-0100',
+            'role' => 'admin',
+        ]);
     }
 
     public function test_admin_mutations_require_csrf_tokens(): void
     {
         $this->actingAs(User::factory()->create(['role' => 'admin']));
         $this->app->instance('env', 'local');
-        foreach ([['post', '/admin/doctors'], ['put', '/admin/doctors/1'], ['delete', '/admin/doctors/1'], ['post', '/admin/departments'], ['put', '/admin/departments/1'], ['delete', '/admin/departments/1'], ['patch', '/admin/messages/1'], ['delete', '/admin/messages/1']] as [$method, $url]) {
+        foreach ([['post', '/admin/doctors'], ['put', '/admin/doctors/1'], ['delete', '/admin/doctors/1'], ['post', '/admin/departments'], ['put', '/admin/departments/1'], ['delete', '/admin/departments/1'], ['patch', '/admin/messages/1'], ['delete', '/admin/messages/1'], ['patch', '/admin/profile']] as [$method, $url]) {
             $this->{$method}($url)->assertStatus(419);
         }
     }

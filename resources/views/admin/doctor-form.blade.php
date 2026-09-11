@@ -1,6 +1,6 @@
 @extends('layouts.admin', ['title' => $doctor ? 'Edit doctor' : 'Create doctor'])
 @section('admin-content')
-    <section class="card border-0 shadow-sm p-4">
+    <section class="card app-panel p-4">
         <h2 class="h4 mb-3">{{ $doctor ? 'Doctor information' : 'New doctor and login account' }}</h2>
         @if ($departments->isEmpty())
             <div class="alert alert-info">Create a department before adding a doctor. <a href="{{ route('admin.departments.create') }}">Create department</a></div>

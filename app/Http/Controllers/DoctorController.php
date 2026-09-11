@@ -21,6 +21,15 @@ class DoctorController extends Controller
     {
         $doctor = $this->doctor($request);
         $counts = $doctor->appointments()->selectRaw('status, COUNT(*) as total')->groupBy('status')->pluck('total', 'status');
+        $now = now();
+        $upcoming = $doctor->appointments()->with('patient')->where('status', 'confirmed')
+            ->where(function (Builder $query) use ($now): void {
+                $query->where('appointment_date', '>', $now->toDateString())
+                    ->orWhere(function (Builder $query) use ($now): void {
+                        $query->where('appointment_date', $now->toDateString())
+                            ->where('appointment_time', '>=', $now->format('H:i:s'));
+                    });
+            });
 
         return view('doctor.dashboard', [
             'doctor' => $doctor->load('user'),
@@ -28,6 +37,10 @@ class DoctorController extends Controller
             'patientCount' => $doctor->appointments()->distinct()->count('patient_id'),
             'todayAppointments' => $doctor->appointments()->with('patient')
                 ->where('appointment_date', now()->toDateString())->orderBy('appointment_time')->orderBy('id')->get(),
+            'pendingAppointments' => $doctor->appointments()->with('patient')->where('status', 'pending')
+                ->orderBy('appointment_date')->orderBy('appointment_time')->orderBy('id')->limit(5)->get(),
+            'upcomingAppointments' => $upcoming->orderBy('appointment_date')->orderBy('appointment_time')->orderBy('id')->limit(5)->get(),
+            'schedules' => $doctor->schedules()->orderBy('id')->get(),
         ]);
     }
 

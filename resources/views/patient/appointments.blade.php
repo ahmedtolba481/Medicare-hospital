@@ -1,7 +1,7 @@
 @extends('layouts.patient', ['title' => 'My Appointments'])
 
 @section('patient-content')
-    <div class="card border-0 shadow-sm p-4">
+    <div class="card app-panel p-4">
         <h2 class="h4 mb-3">Your appointment history</h2>
         <a class="btn btn-primary align-self-start mb-3" href="{{ route('patient.appointments.create') }}">Book Appointment</a>
         <x-patient.appointment-table :appointments="$appointments" />

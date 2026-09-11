@@ -43,10 +43,12 @@ class PatientAreaTest extends TestCase
         $patient = User::factory()->create();
 
         $this->actingAs($patient)->get(route('patient.dashboard'))
-            ->assertSeeText(['Welcome, '.$patient->name, 'You have no upcoming appointments.', 'Profile summary']);
+            ->assertSeeText([$patient->name, 'You have no upcoming appointments.', 'Profile summary']);
 
         foreach (['patient.dashboard', 'patient.appointments.index', 'patient.profile', 'patient.messages.index'] as $routeName) {
-            $this->get(route($routeName))->assertSeeText(['Dashboard', 'My Appointments', 'Profile', 'Messages']);
+            $this->get(route($routeName))
+                ->assertSeeText(['Dashboard', 'My Appointments', 'Doctors', 'Departments', 'Profile', 'Messages', 'Logout'])
+                ->assertDontSee('Thoughtful, evidence-based care for our community');
         }
 
         $this->get(route('home'))->assertSee('href="'.route('patient.dashboard').'"', false);

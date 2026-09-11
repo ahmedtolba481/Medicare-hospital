@@ -1,29 +1,19 @@
-@extends('layouts.public')
+@extends('layouts.dashboard', [
+    'title' => $title ?? 'Patient area',
+    'errorHeading' => 'Please correct the following fields:',
+    'nav' => [
+        ['label' => 'Dashboard', 'url' => route('patient.dashboard'), 'active' => request()->routeIs('patient.dashboard'), 'icon' => 'clipboard'],
+        ['label' => 'My Appointments', 'url' => route('patient.appointments.index'), 'active' => request()->routeIs('patient.appointments.index', 'patient.appointments.show'), 'icon' => 'calendar'],
+        ['label' => 'Book Appointment', 'url' => route('patient.appointments.create'), 'active' => request()->routeIs('patient.appointments.create'), 'icon' => 'plus'],
+        ['label' => 'Doctors', 'url' => route('doctors.index'), 'active' => false, 'icon' => 'stethoscope'],
+        ['label' => 'Departments', 'url' => route('departments.index'), 'active' => false, 'icon' => 'building'],
+        ['label' => 'Messages', 'url' => route('patient.messages.index'), 'active' => request()->routeIs('patient.messages.*'), 'icon' => 'inbox'],
+    ],
+    'footerNav' => [
+        ['label' => 'Profile', 'url' => route('patient.profile'), 'active' => request()->routeIs('patient.profile*'), 'icon' => 'user'],
+    ],
+])
 
 @section('content')
-    <x-public.page-header :title="$title ?? 'Patient area'" subtitle="Your appointments, profile, and care team messages." />
-    <section class="section-padding">
-        <div class="container">
-            <div class="row g-4">
-                <aside class="col-lg-3">
-                    <nav class="list-group" aria-label="Patient navigation">
-                        <a class="list-group-item list-group-item-action {{ request()->routeIs('patient.dashboard') ? 'active' : '' }}" href="{{ route('patient.dashboard') }}">Dashboard</a>
-                        <a class="list-group-item list-group-item-action {{ request()->routeIs('patient.appointments.create') ? 'active' : '' }}" href="{{ route('patient.appointments.create') }}">Book Appointment</a>
-                        <a class="list-group-item list-group-item-action {{ request()->routeIs('patient.appointments.index', 'patient.appointments.show') ? 'active' : '' }}" href="{{ route('patient.appointments.index') }}">My Appointments</a>
-                        <a class="list-group-item list-group-item-action {{ request()->routeIs('patient.profile*') ? 'active' : '' }}" href="{{ route('patient.profile') }}">Profile</a>
-                        <a class="list-group-item list-group-item-action {{ request()->routeIs('patient.messages.*') ? 'active' : '' }}" href="{{ route('patient.messages.index') }}">Messages</a>
-                    </nav>
-                </aside>
-                <div class="col-lg-9">
-                    @if ($errors->any())
-                        <div class="alert alert-danger" role="alert">
-                            <p class="mb-2">Please correct the following fields:</p>
-                            <ul class="mb-0">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
-                        </div>
-                    @endif
-                    @yield('patient-content')
-                </div>
-            </div>
-        </div>
-    </section>
+    @yield('patient-content')
 @endsection

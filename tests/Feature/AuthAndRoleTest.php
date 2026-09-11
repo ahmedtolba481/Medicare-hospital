@@ -8,7 +8,9 @@ use App\Models\User;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
 
 /* Verifies the shared authentication, role middleware, and booking constraint. */
@@ -26,7 +28,7 @@ class AuthAndRoleTest extends TestCase
             'password_confirmation' => 'Password123!',
         ]);
 
-        $response->assertRedirect('/');
+        $response->assertRedirect(route('patient.dashboard'));
         $patient = User::query()->where('email', 'new.patient@example.test')->firstOrFail();
 
         $this->assertAuthenticatedAs($patient);
@@ -39,11 +41,49 @@ class AuthAndRoleTest extends TestCase
         $user = User::factory()->create(['email' => 'login@example.test', 'password' => Hash::make('Password123!')]);
 
         $this->post(route('login.store'), ['email' => $user->email, 'password' => 'Password123!'])
-            ->assertRedirect('/');
+            ->assertRedirect(route('patient.dashboard'));
         $this->assertAuthenticatedAs($user);
 
         $this->post(route('logout'))->assertRedirect(route('login'));
         $this->assertGuest();
+    }
+
+    #[TestWith(['patient', 'patient.dashboard'])]
+    #[TestWith(['doctor', 'doctor.dashboard'])]
+    #[TestWith(['admin', 'admin.dashboard'])]
+    public function test_login_sends_each_role_to_its_dashboard(string $role, string $dashboard): void
+    {
+        $user = $role === 'doctor'
+            ? Doctor::factory()->create()->user
+            : User::factory()->create(['role' => $role]);
+        $user->forceFill(['password' => 'Password123!'])->save();
+
+        $this->post(route('login.store'), ['email' => $user->email, 'password' => 'Password123!'])
+            ->assertRedirect(route($dashboard));
+    }
+
+    public function test_login_returns_to_the_intended_protected_page(): void
+    {
+        $patient = User::factory()->create(['password' => Hash::make('Password123!')]);
+        $url = route('patient.appointments.create');
+
+        $this->get($url);
+
+        $this->post(route('login.store'), ['email' => $patient->email, 'password' => 'Password123!'])
+            ->assertRedirect($url);
+    }
+
+    #[TestWith(['patient', 'patient.dashboard'])]
+    #[TestWith(['doctor', 'doctor.dashboard'])]
+    #[TestWith(['admin', 'admin.dashboard'])]
+    public function test_authenticated_users_are_sent_from_guest_pages_to_their_dashboard(string $role, string $dashboard): void
+    {
+        $user = $role === 'doctor'
+            ? Doctor::factory()->create()->user
+            : User::factory()->create(['role' => $role]);
+
+        $this->actingAs($user)->get(route('login'))->assertRedirect(route($dashboard));
+        $this->get(route('register'))->assertRedirect(route($dashboard));
     }
 
     public function test_invalid_login_returns_an_error_and_does_not_authenticate_the_user(): void
@@ -55,6 +95,21 @@ class AuthAndRoleTest extends TestCase
             ->assertRedirect(route('login'))
             ->assertSessionHasErrors('email');
 
+        $this->assertGuest();
+    }
+
+    public function test_login_attempts_are_rate_limited_per_email_and_ip(): void
+    {
+        RateLimiter::clear('login@example.test|127.0.0.1');
+        $user = User::factory()->create(['email' => 'login@example.test', 'password' => Hash::make('Password123!')]);
+
+        for ($attempt = 0; $attempt < 5; $attempt++) {
+            $this->from(route('login'))->post(route('login.store'), ['email' => $user->email, 'password' => 'incorrect-password'])
+                ->assertRedirect(route('login'));
+        }
+
+        $this->from(route('login'))->post(route('login.store'), ['email' => $user->email, 'password' => 'incorrect-password'])
+            ->assertStatus(429);
         $this->assertGuest();
     }
 

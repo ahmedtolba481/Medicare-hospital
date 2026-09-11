@@ -1,7 +1,7 @@
 @extends('layouts.patient', ['title' => 'My messages'])
 
 @section('patient-content')
-    <section class="card border-0 shadow-sm p-4 mb-4">
+    <section class="card app-panel p-4 mb-4">
         <h2 class="h4 mb-3">Message the care team</h2>
         <p class="muted-copy">We will respond using the contact details in your profile. For emergencies, call your local emergency number.</p>
         <form method="POST" action="{{ route('patient.messages.store') }}" novalidate>
@@ -22,13 +22,13 @@
     <section aria-labelledby="sent-messages">
         <h2 id="sent-messages" class="h4 mb-3">Sent messages</h2>
         @forelse ($messages as $message)
-            <article class="card border-0 shadow-sm p-4 mb-3 text-break">
+            <article class="card app-panel p-4 mb-3 text-break">
                 <h3 class="h5">{{ $message->subject ?: 'Message to the care team' }}</h3>
                 <p class="small text-secondary">Sent {{ $message->created_at->format('M j, Y, g:i A') }} · {{ $message->status === 'read' ? 'Read by the care team' : 'Awaiting review' }}</p>
                 <p class="mb-0">{{ $message->message }}</p>
             </article>
         @empty
-            <p class="text-secondary">You have not sent any messages from your patient account yet.</p>
+            <x-dashboard.empty-state title="No messages" message="You have not sent any messages from your patient account yet." icon="inbox" />
         @endforelse
         {{ $messages->links('pagination::bootstrap-5') }}
     </section>

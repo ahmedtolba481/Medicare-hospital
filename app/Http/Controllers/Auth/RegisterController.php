@@ -33,6 +33,6 @@ class RegisterController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->intended('/')->with('status', 'Registration successful.');
+        return redirect()->intended(route($user->dashboardRoute()))->with('status', 'Registration successful.');
     }
 }

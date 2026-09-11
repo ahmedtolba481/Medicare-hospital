@@ -1,7 +1,7 @@
 @extends('layouts.doctor', ['title' => 'My doctor profile'])
 
 @section('doctor-content')
-    <div class="card border-0 shadow-sm p-4">
+    <div class="card app-panel p-4">
         <h2 class="h4 mb-3">Personal and professional information</h2>
         <p class="text-secondary">Department: {{ $doctor->department->name }}</p>
         <form method="POST" action="{{ route('doctor.profile.update') }}" novalidate>

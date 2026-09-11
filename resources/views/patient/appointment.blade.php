@@ -1,7 +1,7 @@
 @extends('layouts.patient', ['title' => 'Appointment details'])
 
 @section('patient-content')
-    <div class="card border-0 shadow-sm p-4">
+    <div class="card app-panel p-4">
         <h2 class="h4 mb-4">Visit with <a href="{{ route('doctors.show', $appointment->doctor) }}">{{ $appointment->doctor->user->name }}</a></h2>
         <dl class="row text-break">
             <dt class="col-sm-4">Date</dt><dd class="col-sm-8">{{ $appointment->appointment_date->format('M j, Y') }}</dd>

@@ -1,6 +1,6 @@
 @extends('layouts.admin', ['title' => 'Appointments'])
 @section('admin-content')
-    <section class="card border-0 shadow-sm p-4">
+    <section class="card app-panel p-4">
         <h2 class="h4 mb-3">All appointments</h2>
         <form class="row g-3 mb-4" method="GET" action="{{ route('admin.appointments.index') }}">
             <div class="col-md-4">

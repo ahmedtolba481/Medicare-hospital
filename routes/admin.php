@@ -6,6 +6,8 @@ use App\Http\Controllers\AdminDoctorController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function (): void {
+    Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
+    Route::patch('/profile', [AdminController::class, 'updateProfile'])->name('profile.update');
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::resource('doctors', AdminDoctorController::class)->except('show');
     Route::resource('departments', AdminDepartmentController::class)->except('show');

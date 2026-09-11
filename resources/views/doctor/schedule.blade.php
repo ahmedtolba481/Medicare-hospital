@@ -1,7 +1,7 @@
 @extends('layouts.doctor', ['title' => 'My working schedule'])
 
 @section('doctor-content')
-    <section class="card border-0 shadow-sm p-4 mb-4">
+    <section class="card app-panel p-4 mb-4">
         <h2 class="h4 mb-3">Weekly working hours</h2>
         <p class="text-secondary">Times use {{ config('app.timezone') }}. Entries must allow at least 30 minutes and must not overlap. Upcoming pending and confirmed appointments must remain within your working hours.</p>
         @forelse ($schedules as $schedule)
@@ -20,10 +20,10 @@
                 </details>
             </div>
         @empty
-            <p class="text-secondary mb-0">No working hours have been added yet.</p>
+            <x-dashboard.empty-state message="No working hours have been added yet." />
         @endforelse
     </section>
-    <section class="card border-0 shadow-sm p-4">
+    <section class="card app-panel p-4">
         <h2 class="h4 mb-3">Add working hours</h2>
         <x-doctor.schedule-form />
     </section>

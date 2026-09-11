@@ -1,27 +1,50 @@
 @extends('layouts.patient', ['title' => 'Patient dashboard'])
 
 @section('patient-content')
-    <h2 class="h3 mb-2">Welcome, {{ $patient->name }}</h2>
-    <p class="muted-copy mb-4">Here is an overview of your care at MediCare.</p>
+    <x-dashboard.welcome :name="$patient->name" copy="Here's an overview of your healthcare activity." />
+
     <div class="row g-3 mb-4">
-        <div class="col-6 col-md-4"><div class="stat-card h-100"><strong class="h2 d-block">{{ $totalAppointments }}</strong><span>Total appointments</span></div></div>
-        <div class="col-6 col-md-4"><div class="stat-card h-100"><strong class="h2 d-block">{{ $upcomingCount }}</strong><span>Upcoming</span></div></div>
-        @foreach (['pending', 'confirmed', 'completed', 'cancelled', 'rejected'] as $status)
-            <div class="col-6 col-md-4"><div class="stat-card h-100"><strong class="h2 d-block">{{ $statusCounts->get($status, 0) }}</strong><span>{{ ucfirst($status) }}</span></div></div>
-        @endforeach
+        <x-dashboard.stat-card :value="$totalAppointments" label="Total Appointments" icon="calendar" description="All visits on your record" />
+        <x-dashboard.stat-card :value="$upcomingCount" label="Upcoming" icon="clock" description="Pending or confirmed next visits" />
+        <x-dashboard.stat-card :value="$statusCounts->get('pending', 0)" label="Pending" icon="alert" description="Awaiting confirmation" />
+        <x-dashboard.stat-card :value="$statusCounts->get('confirmed', 0)" label="Confirmed" icon="check" description="Scheduled with your doctor" />
+        <x-dashboard.stat-card :value="$statusCounts->get('completed', 0)" label="Completed" icon="clipboard" description="Finished visits" />
+        <x-dashboard.stat-card :value="$statusCounts->get('cancelled', 0)" label="Cancelled" icon="x" description="Cancelled by you" />
+        <x-dashboard.stat-card :value="$statusCounts->get('rejected', 0)" label="Rejected" icon="x" description="Not accepted by the clinic" />
     </div>
-    <section class="card border-0 shadow-sm p-4 mb-4">
-        <h2 class="h4 mb-3">Upcoming appointments</h2>
-        <x-patient.appointment-table :appointments="$upcomingAppointments" empty-message="You have no upcoming appointments." />
-        <a class="align-self-start mt-3" href="{{ route('patient.appointments.index') }}">View all appointments</a>
+
+    <section class="card app-panel p-4 mb-4">
+        <div class="app-panel-head">
+            <h2 class="h5 mb-0">Upcoming Appointments</h2>
+            <a class="app-quiet-link" href="{{ route('patient.appointments.index') }}">View all</a>
+        </div>
+        <x-patient.appointment-table :appointments="$upcomingAppointments" empty-title="No upcoming appointments" empty-message="You have no upcoming appointments.">
+            <a class="btn btn-primary btn-sm" href="{{ route('patient.appointments.create') }}">Book an Appointment</a>
+        </x-patient.appointment-table>
     </section>
-    <section class="card border-0 shadow-sm p-4 mb-4">
-        <h2 class="h4 mb-3">Recently added appointments</h2>
-        <x-patient.appointment-table :appointments="$recentAppointments" />
+
+    <section class="card app-panel p-4 mb-4">
+        <div class="app-panel-head">
+            <h2 class="h5 mb-0">Recent Appointments</h2>
+        </div>
+        <x-patient.appointment-table :appointments="$recentAppointments" empty-title="No appointments yet" empty-message="You have no appointments yet." />
     </section>
-    <section class="card border-0 shadow-sm p-4">
-        <h2 class="h4 mb-3">Profile summary</h2>
+
+    <section class="card app-panel p-4 mb-4">
+        <h2 class="h5 mb-3">Quick Actions</h2>
+        <div class="app-quick-grid">
+            <x-dashboard.quick-action :href="route('patient.appointments.create')" label="Book Appointment" icon="plus" />
+            <x-dashboard.quick-action :href="route('patient.appointments.index')" label="View Appointments" icon="calendar" />
+            <x-dashboard.quick-action :href="route('doctors.index')" label="Find a Doctor" icon="stethoscope" />
+            <x-dashboard.quick-action :href="route('patient.profile')" label="View Profile" icon="user" />
+        </div>
+    </section>
+
+    <section class="card app-panel p-4">
+        <div class="app-panel-head">
+            <h2 class="h5 mb-0">Profile summary</h2>
+            <a class="btn btn-outline-primary btn-sm" href="{{ route('patient.profile') }}">Edit profile</a>
+        </div>
         <x-patient.profile-summary :patient="$patient" />
-        <a class="align-self-start mt-3" href="{{ route('patient.profile') }}">Edit profile</a>
     </section>
 @endsection

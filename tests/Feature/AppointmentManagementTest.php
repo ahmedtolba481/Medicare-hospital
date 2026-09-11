@@ -14,11 +14,11 @@ class AppointmentManagementTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[TestWith(['pending', 'text-bg-warning', 'awaiting confirmation'])]
-    #[TestWith(['confirmed', 'text-bg-primary', 'confirmed by the care team'])]
-    #[TestWith(['completed', 'text-bg-success', 'has been completed'])]
-    #[TestWith(['cancelled', 'text-bg-secondary', 'has been cancelled'])]
-    #[TestWith(['rejected', 'text-bg-danger', 'was not accepted'])]
+    #[TestWith(['pending', 'status-pending', 'awaiting confirmation'])]
+    #[TestWith(['confirmed', 'status-confirmed', 'confirmed by the care team'])]
+    #[TestWith(['completed', 'status-completed', 'has been completed'])]
+    #[TestWith(['cancelled', 'status-cancelled', 'has been cancelled'])]
+    #[TestWith(['rejected', 'status-rejected', 'was not accepted'])]
     public function test_every_status_has_a_clear_badge_and_explanation(string $status, string $badge, string $message): void
     {
         $appointment = $this->futureAppointment($status);

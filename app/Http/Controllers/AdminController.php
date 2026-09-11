@@ -24,9 +24,13 @@ class AdminController extends Controller
                 'Total departments' => Department::count(),
                 'Total appointments' => Appointment::count(),
                 'Pending appointments' => Appointment::where('status', 'pending')->count(),
+                'Confirmed appointments' => Appointment::where('status', 'confirmed')->count(),
                 'Unread messages' => ContactMessage::where('status', 'unread')->count(),
             ],
             'appointments' => Appointment::with(['patient', 'doctor.user'])->orderByDesc('created_at')->orderByDesc('id')->limit(5)->get(),
+            'recentDoctors' => Doctor::with(['user', 'department'])->orderByDesc('id')->limit(5)->get(),
+            'recentPatients' => User::where('role', 'patient')->orderByDesc('id')->limit(5)->get(),
+            'recentMessages' => ContactMessage::orderByDesc('created_at')->orderByDesc('id')->limit(5)->get(),
         ]);
     }
 
@@ -94,5 +98,30 @@ class AdminController extends Controller
         $message->delete();
 
         return redirect()->route('admin.messages.index')->with('status', 'Contact message deleted successfully.');
+    }
+
+    public function profile(): View
+    {
+        return view('admin.profile', ['admin' => auth()->user()]);
+    }
+
+    public function updateProfile(Request $request): RedirectResponse
+    {
+        $admin = $request->user();
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($admin)],
+            'phone' => ['nullable', 'string', 'max:30'],
+        ]);
+
+        $admin->fill($validated);
+
+        if ($admin->isDirty('email')) {
+            $admin->email_verified_at = null;
+        }
+
+        $admin->save();
+
+        return redirect()->route('admin.profile')->with('status', 'Your profile has been updated.');
     }
 }

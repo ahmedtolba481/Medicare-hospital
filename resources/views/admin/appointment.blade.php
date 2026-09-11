@@ -1,6 +1,6 @@
 @extends('layouts.admin', ['title' => 'Appointment details'])
 @section('admin-content')
-    <section class="card border-0 shadow-sm p-4">
+    <section class="card app-panel p-4">
         <h2 class="h4 mb-3">Appointment #{{ $appointment->id }}</h2>
         <p>{{ $appointment->appointment_date->format('M j, Y') }} at {{ \Illuminate\Support\Carbon::parse($appointment->appointment_time)->format('g:i A') }} <x-patient.appointment-status :status="$appointment->status" /></p>
         <h3 class="h6">Doctor</h3>

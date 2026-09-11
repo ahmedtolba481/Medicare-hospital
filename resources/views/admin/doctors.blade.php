@@ -1,13 +1,13 @@
 @extends('layouts.admin', ['title' => 'Doctors'])
 @section('admin-content')
-    <section class="card border-0 shadow-sm p-4">
+    <section class="card app-panel p-4">
         <div class="d-flex flex-wrap justify-content-between gap-3 mb-3"><h2 class="h4 mb-0">Doctor directory</h2><a class="btn btn-primary" href="{{ route('admin.doctors.create') }}">Create doctor</a></div>
         <p class="small text-secondary">Doctors with appointment history cannot be deleted.</p>
         @if ($doctors->isEmpty())
-            <p>No doctors have been added yet.</p>
+            <x-dashboard.empty-state title="No doctors found" message="No doctors have been added yet." icon="stethoscope" />
         @else
             <div class="table-responsive">
-                <table class="table align-middle">
+                <table class="table app-table align-middle">
                     <thead><tr><th scope="col">Doctor</th><th scope="col">Department</th><th scope="col">Specialization</th><th scope="col">Appointments</th><th scope="col">Actions</th></tr></thead>
                     <tbody>
                         @foreach ($doctors as $doctor)

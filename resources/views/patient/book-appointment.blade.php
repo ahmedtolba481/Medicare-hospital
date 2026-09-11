@@ -1,11 +1,13 @@
 @extends('layouts.patient', ['title' => 'Book an appointment'])
 
 @section('patient-content')
-    <section class="card border-0 shadow-sm p-4 mb-4">
+    <section class="card app-panel p-4 mb-4">
         <h2 class="h4 mb-3">1. Choose your doctor and date</h2>
         <p class="text-secondary">Appointments last 30 minutes. Times are shown in {{ config('app.timezone') }}.</p>
         @if ($doctors->isEmpty())
-            <p class="mb-0">No doctors are currently listed. Please <a href="{{ route('contact') }}">contact our care team</a> for assistance.</p>
+            <x-dashboard.empty-state>
+                <p class="mb-0">No doctors are currently listed. Please <a href="{{ route('contact') }}">contact our care team</a> for assistance.</p>
+            </x-dashboard.empty-state>
         @else
             <form method="GET" action="{{ route('patient.appointments.create') }}">
                 <div class="row g-3 align-items-end">
@@ -29,7 +31,7 @@
     </section>
 
     @if ($selectedDoctor && $selectedDate !== '')
-        <section class="card border-0 shadow-sm p-4">
+        <section class="card app-panel p-4">
             <h2 class="h4 mb-3">2. Choose a time and tell us about your visit</h2>
             <p>{{ $selectedDoctor->user->name }} · {{ \Illuminate\Support\Carbon::parse($selectedDate)->format('M j, Y') }}</p>
             @if ($slots === [])

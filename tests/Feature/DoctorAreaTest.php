@@ -166,7 +166,9 @@ class DoctorAreaTest extends TestCase
     {
         $doctor = Doctor::factory()->create();
         $verifiedAt = $doctor->user->email_verified_at;
-        $this->actingAs($doctor->user)->get(route('doctor.dashboard'))->assertOk()->assertSeeText('No appointments to display.')->assertViewHas('patientCount', 0);
+        $this->actingAs($doctor->user)->get(route('doctor.dashboard'))->assertOk()->assertSeeText('No appointments to display.')->assertViewHas('patientCount', 0)
+            ->assertSeeText(['Appointments', 'Patients', 'Schedule', 'Profile', 'Logout'])
+            ->assertDontSee('Thoughtful, evidence-based care for our community');
         $this->get(route('doctor.appointments.index'))->assertOk()->assertSeeText('No appointments to display.');
         $this->get(route('doctor.patients.index'))->assertOk()->assertSeeText('No patients are assigned to you yet.');
         $this->get(route('doctor.schedule.index'))->assertOk()->assertSeeText('No working hours have been added yet.');

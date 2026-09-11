@@ -1,7 +1,7 @@
 @extends('layouts.patient', ['title' => 'My profile'])
 
 @section('patient-content')
-    <div class="card border-0 shadow-sm p-4">
+    <div class="card app-panel p-4">
         <h2 class="h4 mb-3">Your personal information</h2>
         <form method="POST" action="{{ route('patient.profile.update') }}" novalidate>
             @csrf

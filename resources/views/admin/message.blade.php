@@ -1,6 +1,6 @@
 @extends('layouts.admin', ['title' => 'Contact message'])
 @section('admin-content')
-    <section class="card border-0 shadow-sm p-4">
+    <section class="card app-panel p-4">
         <h2 class="h4 text-break mb-3">{{ $contactMessage->subject }}</h2>
         <p><span class="badge {{ $contactMessage->status === 'unread' ? 'text-bg-warning' : 'text-bg-secondary' }}">{{ ucfirst($contactMessage->status) }}</span> &middot; {{ $contactMessage->created_at->format('M j, Y g:i A') }}</p>
         <dl class="row">
