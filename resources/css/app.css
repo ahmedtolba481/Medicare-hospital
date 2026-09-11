@@ -832,7 +832,6 @@ html {
     color: var(--medicare-primary);
 }
 .app-main {
-    max-width: 1280px;
     padding: 1.35rem 1.15rem 2.4rem;
     width: 100%;
 }
