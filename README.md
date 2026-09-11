@@ -1,8 +1,104 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="360" alt="Laravel Logo">
+</p>
 
-## MediCare demo accounts
+<h1 align="center">MediCare Hospital</h1>
 
-Run `php artisan migrate:fresh --seed` to rebuild the local database with MediCare demo data. These accounts are for local development only:
+<p align="center">A modern hospital appointment platform for patients, doctors, and administrators.</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel&logoColor=white" alt="Laravel 13">
+  <img src="https://img.shields.io/badge/PHP-8.3%2B-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP 8.3 or newer">
+  <img src="https://img.shields.io/badge/Frontend-Vite%20%2B%20Bootstrap-7952B3?style=flat-square&logo=vite&logoColor=white" alt="Vite and Bootstrap">
+</p>
+
+## Overview
+
+MediCare brings the core hospital experience into one focused web application. Visitors can explore departments and doctors, patients can book and track appointments, doctors can manage their availability and consultations, and administrators can manage the clinical directory and day-to-day operations.
+
+## What is included
+
+### Public experience
+
+- Hospital home, about, services, department, doctor, and contact pages
+- Clinical directory built around departments and doctor profiles
+- Contact form for general enquiries
+
+### Patient portal
+
+- Patient registration and role-based authentication
+- Appointment booking from doctor availability
+- Appointment history, details, and cancellation
+- Profile management and secure messages
+
+### Doctor portal
+
+- Dashboard with upcoming clinical activity
+- Appointment review and status updates
+- Patient list and patient detail views
+- Weekly schedule creation, editing, and removal
+- Doctor profile management
+
+### Administration
+
+- Dashboard metrics for patients, doctors, departments, and appointments
+- Department and doctor directory management
+- Appointment oversight and contact message management
+- Protected role-based access for operational workflows
+
+## Tech stack
+
+- **Backend:** Laravel 13, PHP 8.3+
+- **Database:** Laravel migrations, Eloquent ORM, and seeders
+- **Frontend:** Blade, Bootstrap 5, Tailwind CSS 4, Vite
+- **Testing:** PHPUnit
+- **Code quality:** Laravel Pint
+
+## Quick start
+
+### Requirements
+
+- PHP 8.3 or newer
+- Composer
+- Node.js and npm
+- A supported Laravel database such as SQLite or MySQL
+
+### Installation
+
+```bash
+git clone <repository-url>
+cd Medicare-hospital
+composer install
+copy .env.example .env # Windows
+# cp .env.example .env # macOS/Linux
+php artisan key:generate
+```
+
+Configure the database values in `.env`, then run the migrations and demo seeder:
+
+```bash
+php artisan migrate:fresh --seed
+npm install
+npm run build
+```
+
+Start the application:
+
+```bash
+php artisan serve
+```
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
+
+For an active development workflow with Vite hot reload, use:
+
+```bash
+composer run dev
+```
+
+## Demo accounts
+
+`php artisan migrate:fresh --seed` creates stable demo records for local development. These credentials are not intended for production use.
 
 | Role | Email | Password |
 | --- | --- | --- |
@@ -10,59 +106,42 @@ Run `php artisan migrate:fresh --seed` to rebuild the local database with MediCa
 | Doctor | `doctor.carter@medicare.test` | `Doctor@12345` |
 | Patient | `patient1@medicare.test` | `Patient@12345` |
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Additional seeded doctors and patients are available for testing appointment workflows.
 
-## About Laravel
-
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Useful commands
 
 ```bash
-composer require laravel/boost --dev
+# Reset the local database and restore demo data
+php artisan migrate:fresh --seed
 
-php artisan boost:install
+# Run the test suite
+php artisan test --compact
+
+# Format changed PHP files
+vendor/bin/pint --dirty --format agent
+
+# Build production frontend assets
+npm run build
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Project structure
 
-## Contributing
+```text
+app/                 Application services, models, policies, and controllers
+database/            Migrations, factories, and demo seeders
+resources/views/     Blade pages and role-based portal views
+resources/css/       Application styles
+resources/js/        Frontend entrypoint
+routes/              Public, patient, doctor, and admin routes
+tests/               Feature and unit tests
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Security notes
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- Demo accounts and seeded personal data are for local development only.
+- Keep `.env` out of version control and use strong production credentials.
+- Review authentication, authorization, validation, and database settings before deploying.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is built with the [Laravel framework](https://laravel.com), which is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
