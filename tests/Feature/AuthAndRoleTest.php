@@ -27,8 +27,11 @@ class AuthAndRoleTest extends TestCase
         ]);
 
         $response->assertRedirect('/');
-        $this->assertAuthenticatedAs(User::where('email', 'new.patient@example.test')->first());
+        $patient = User::query()->where('email', 'new.patient@example.test')->firstOrFail();
+
+        $this->assertAuthenticatedAs($patient);
         $this->assertDatabaseHas('users', ['email' => 'new.patient@example.test', 'role' => 'patient']);
+        $this->assertTrue(Hash::check('Password123!', $patient->password));
     }
 
     public function test_user_can_login_and_logout(): void
@@ -43,16 +46,59 @@ class AuthAndRoleTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_role_middleware_allows_matching_role_and_forbids_other_roles(): void
+    public function test_invalid_login_returns_an_error_and_does_not_authenticate_the_user(): void
     {
-        Route::middleware(['auth', 'role:admin'])->get('/test-admin-area', fn () => response('ok'));
-        $admin = User::factory()->create(['role' => 'admin']);
-        $patient = User::factory()->create(['role' => 'patient']);
+        $user = User::factory()->create(['password' => Hash::make('Password123!')]);
 
-        $this->actingAs($admin)->get('/test-admin-area')->assertOk();
-        $this->actingAs($patient)->get('/test-admin-area')->assertForbidden();
-        $this->post(route('logout'));
-        $this->get('/test-admin-area')->assertRedirect(route('login'));
+        $this->from(route('login'))
+            ->post(route('login.store'), ['email' => $user->email, 'password' => 'incorrect-password'])
+            ->assertRedirect(route('login'))
+            ->assertSessionHasErrors('email');
+
+        $this->assertGuest();
+    }
+
+    public function test_patient_registration_rejects_a_duplicate_email_address(): void
+    {
+        User::factory()->create(['email' => 'existing.patient@example.test']);
+
+        $this->from(route('register'))
+            ->post(route('register.store'), [
+                'name' => 'Another Patient',
+                'email' => 'existing.patient@example.test',
+                'password' => 'Password123!',
+                'password_confirmation' => 'Password123!',
+            ])
+            ->assertRedirect(route('register'))
+            ->assertSessionHasErrors('email');
+
+        $this->assertSame(1, User::query()->where('email', 'existing.patient@example.test')->count());
+        $this->assertGuest();
+    }
+
+    public function test_every_role_is_limited_to_its_own_protected_area(): void
+    {
+        $protectedAreas = [
+            'patient' => '/test-patient-area',
+            'doctor' => '/test-doctor-area',
+            'admin' => '/test-admin-area',
+        ];
+
+        foreach ($protectedAreas as $role => $path) {
+            Route::middleware(['auth', 'role:'.$role])->get($path, fn () => response('ok'));
+
+            $this->get($path)->assertRedirect(route('login'));
+        }
+
+        foreach (array_keys($protectedAreas) as $userRole) {
+            $user = User::factory()->create(['role' => $userRole]);
+
+            foreach ($protectedAreas as $areaRole => $areaPath) {
+                $expectedStatus = $userRole === $areaRole ? 200 : 403;
+
+                $this->actingAs($user)->get($areaPath)->assertStatus($expectedStatus);
+            }
+        }
     }
 
     public function test_duplicate_doctor_date_and_time_is_rejected_by_database(): void

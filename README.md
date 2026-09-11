@@ -1,5 +1,15 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
+## MediCare demo accounts
+
+Run `php artisan migrate:fresh --seed` to rebuild the local database with MediCare demo data. These accounts are for local development only:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Admin | `admin@medicare.test` | `Admin@12345` |
+| Doctor | `doctor.carter@medicare.test` | `Doctor@12345` |
+| Patient | `patient1@medicare.test` | `Patient@12345` |
+
 <p align="center">
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
