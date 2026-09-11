@@ -32,6 +32,21 @@ class User extends Authenticatable
         return $this->hasMany(Appointment::class, 'patient_id');
     }
 
+    /** @return HasMany<ContactMessage, $this> */
+    public function contactMessages(): HasMany
+    {
+        return $this->hasMany(ContactMessage::class, 'patient_id');
+    }
+
+    public function dashboardRoute(): string
+    {
+        return match ($this->role) {
+            'doctor' => 'doctor.dashboard',
+            'admin' => 'admin.dashboard',
+            default => 'patient.dashboard',
+        };
+    }
+
     /**
      * Get the attributes that should be cast.
      *

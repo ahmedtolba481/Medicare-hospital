@@ -14,10 +14,18 @@ class DepartmentSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach (['Cardiology', 'Neurology', 'Pediatrics', 'Orthopedics', 'Dentistry'] as $name) {
+        $departments = [
+            'Cardiology' => 'Diagnosis and treatment for heart and circulatory conditions.',
+            'Neurology' => 'Specialist care for conditions affecting the brain, spine, and nervous system.',
+            'Pediatrics' => 'Comprehensive medical care for infants, children, and adolescents.',
+            'Orthopedics' => 'Treatment for bone, joint, muscle, and sports-related conditions.',
+            'Dentistry' => 'Preventive, restorative, and urgent dental care for all ages.',
+        ];
+
+        foreach ($departments as $name => $description) {
             Department::updateOrCreate(
                 ['name' => $name],
-                ['description' => $name.' services at MediCare Hospital.']
+                ['description' => $description]
             );
         }
     }

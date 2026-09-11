@@ -1,46 +1,7 @@
-{{-- Patient registration form for the shared authentication foundation. --}}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register | MediCare Hospital</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="min-h-screen bg-slate-100 px-4 py-12 text-slate-900">
-    <main class="mx-auto max-w-md rounded-lg bg-white p-8 shadow">
-        <h1 class="mb-6 text-2xl font-semibold">Create patient account</h1>
+@extends('layouts.public')
 
-        <form method="POST" action="{{ route('register.store') }}" class="space-y-4">
-            @csrf
-            <div>
-                <label for="name" class="mb-1 block text-sm font-medium">Name</label>
-                <input id="name" name="name" type="text" value="{{ old('name') }}" required class="w-full rounded border-slate-300">
-                @error('name')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-            </div>
-            <div>
-                <label for="email" class="mb-1 block text-sm font-medium">Email</label>
-                <input id="email" name="email" type="email" value="{{ old('email') }}" required class="w-full rounded border-slate-300">
-                @error('email')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-            </div>
-            <div>
-                <label for="phone" class="mb-1 block text-sm font-medium">Phone</label>
-                <input id="phone" name="phone" type="text" value="{{ old('phone') }}" class="w-full rounded border-slate-300">
-                @error('phone')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-            </div>
-            <div>
-                <label for="password" class="mb-1 block text-sm font-medium">Password</label>
-                <input id="password" name="password" type="password" required class="w-full rounded border-slate-300">
-                @error('password')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-            </div>
-            <div>
-                <label for="password_confirmation" class="mb-1 block text-sm font-medium">Confirm password</label>
-                <input id="password_confirmation" name="password_confirmation" type="password" required class="w-full rounded border-slate-300">
-            </div>
-            <button type="submit" class="w-full rounded bg-slate-900 px-4 py-2 font-medium text-white">Register</button>
-        </form>
-
-        <p class="mt-6 text-sm">Already registered? <a class="font-medium underline" href="{{ route('login') }}">Sign in</a></p>
-    </main>
-</body>
-</html>
+@section('content')
+    <section class="section-padding auth-page">
+        <div class="container"><div class="row justify-content-center"><div class="col-md-9 col-lg-6"><div class="card contact-card p-4 p-md-5"><p class="eyebrow mb-2">Patient registration</p><h1 class="h2 mb-4">Create your MediCare account</h1><form method="POST" action="{{ route('register.store') }}">@csrf <div class="row g-3"><div class="col-12"><label class="form-label" for="name">Full name</label><input id="name" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required>@error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror</div><div class="col-12"><label class="form-label" for="email">Email</label><input id="email" class="form-control @error('email') is-invalid @enderror" name="email" type="email" value="{{ old('email') }}" required>@error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror</div><div class="col-md-6"><label class="form-label" for="phone">Phone <span class="text-secondary">(optional)</span></label><input id="phone" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}">@error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror</div><div class="col-md-6"><label class="form-label" for="date_of_birth">Date of birth <span class="text-secondary">(optional)</span></label><input id="date_of_birth" class="form-control @error('date_of_birth') is-invalid @enderror" name="date_of_birth" type="date" value="{{ old('date_of_birth') }}">@error('date_of_birth')<div class="invalid-feedback">{{ $message }}</div>@enderror</div><div class="col-12"><label class="form-label" for="address">Address <span class="text-secondary">(optional)</span></label><textarea id="address" class="form-control @error('address') is-invalid @enderror" name="address" rows="2">{{ old('address') }}</textarea>@error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror</div><div class="col-md-6"><label class="form-label" for="password">Password</label><input id="password" class="form-control @error('password') is-invalid @enderror" name="password" type="password" required>@error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror</div><div class="col-md-6"><label class="form-label" for="password_confirmation">Confirm password</label><input id="password_confirmation" class="form-control" name="password_confirmation" type="password" required></div><div class="col-12"><button class="btn btn-primary w-100 mt-2" type="submit">Create patient account</button></div></div></form><p class="text-secondary small mt-4 mb-0">Already registered? <a href="{{ route('login') }}">Sign in</a>.</p></div></div></div></div>
+    </section>
+@endsection
