@@ -13,6 +13,15 @@ class SaveAdminDoctorRequest extends FormRequest
         return $this->user()?->role === 'admin';
     }
 
+    protected function getRedirectUrl(): string
+    {
+        if ($this->route('doctor') instanceof Doctor && ! $this->headers->has('referer')) {
+            return route('admin.doctors.index');
+        }
+
+        return parent::getRedirectUrl();
+    }
+
     /** @return array<string, array<int, mixed>> */
     public function rules(): array
     {
@@ -28,6 +37,7 @@ class SaveAdminDoctorRequest extends FormRequest
             'experience' => ['required', 'integer', 'min:0', 'max:80'],
             'education' => ['nullable', 'string', 'max:255'],
             'bio' => ['nullable', 'string', 'max:5000'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
         ];
     }
 }

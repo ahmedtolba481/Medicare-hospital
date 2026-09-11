@@ -37,6 +37,10 @@
             @if ($slots === [])
                 <div class="alert alert-info mb-0" role="status">No available times for this doctor on this date. Please choose another date or doctor.</div>
             @else
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <x-public.doctor-photo :doctor="$selectedDoctor" class="doctor-avatar-sm" />
+                    <div><strong>{{ $selectedDoctor->user->name }}</strong><span class="d-block text-secondary">{{ $selectedDoctor->specialization }}</span></div>
+                </div>
                 <form method="POST" action="{{ route('patient.appointments.store') }}" novalidate>
                     @csrf
                     <input type="hidden" name="doctor_id" value="{{ $selectedDoctor->id }}">

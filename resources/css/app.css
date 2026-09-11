@@ -535,6 +535,32 @@ html {
     border-radius: 1.25rem;
     min-height: 330px;
 }
+.doctor-avatar img {
+    height: 100%;
+    object-fit: cover;
+}
+.doctor-avatar-sm {
+    border-radius: 0.65rem;
+    flex: 0 0 3.75rem;
+    font-size: 1.25rem;
+    height: 3.75rem;
+    min-height: 3.75rem;
+    overflow: hidden;
+    width: 3.75rem;
+}
+.doctor-avatar-sm img {
+    height: 100%;
+    width: 100%;
+}
+.doctor-image-preview {
+    align-items: center;
+    display: flex;
+    min-height: 90px;
+}
+.doctor-image-preview img {
+    border-radius: 0.65rem;
+    object-fit: cover;
+}
 .page-header {
     background:
         radial-gradient(circle at 90% 5%, #c9edf3 0, transparent 22rem),

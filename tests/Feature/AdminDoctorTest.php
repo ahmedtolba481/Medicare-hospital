@@ -8,7 +8,9 @@ use App\Models\Doctor;
 use App\Models\DoctorSchedule;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
 
@@ -46,6 +48,47 @@ class AdminDoctorTest extends TestCase
         $this->assertSame($department->id, $doctor->fresh()->department_id);
         $this->assertSame('Cardiology', $doctor->fresh()->specialization);
         $this->assertSame('New Doctor', $doctor->user->fresh()->name);
+    }
+
+    public function test_doctor_images_can_be_created_replaced_retained_and_deleted(): void
+    {
+        Storage::fake('public');
+        $department = Department::factory()->create();
+        $admin = User::factory()->create(['role' => 'admin']);
+        $data = [...$this->data($department), 'password' => 'SafePassword123', 'password_confirmation' => 'SafePassword123'];
+
+        $this->actingAs($admin)->post(route('admin.doctors.store'), [...$data, 'image' => UploadedFile::fake()->image('doctor.jpg')])->assertRedirect();
+        $doctor = Doctor::sole();
+        $firstImage = $doctor->image;
+        Storage::disk('public')->assertExists($firstImage);
+
+        $this->put(route('admin.doctors.update', $doctor), [...$this->data($department), 'email' => $doctor->user->email, 'image' => UploadedFile::fake()->image('doctor.png')])->assertRedirect();
+        $doctor->refresh();
+        Storage::disk('public')->assertMissing($firstImage);
+        Storage::disk('public')->assertExists($doctor->image);
+        $secondImage = $doctor->image;
+
+        $this->put(route('admin.doctors.update', $doctor), [...$this->data($department), 'email' => $doctor->user->email])->assertRedirect();
+        $this->assertSame($secondImage, $doctor->fresh()->image);
+        Storage::disk('public')->assertExists($secondImage);
+
+        $this->delete(route('admin.doctors.destroy', $doctor))->assertRedirect();
+        Storage::disk('public')->assertMissing($secondImage);
+    }
+
+    public function test_doctor_image_upload_rejects_non_images_and_oversized_files(): void
+    {
+        Storage::fake('public');
+        $department = Department::factory()->create();
+        $admin = User::factory()->create(['role' => 'admin']);
+        $data = [...$this->data($department), 'password' => 'SafePassword123', 'password_confirmation' => 'SafePassword123'];
+
+        $this->actingAs($admin)->postJson(route('admin.doctors.store'), [...$data, 'image' => UploadedFile::fake()->create('doctor.pdf', 100, 'application/pdf')])
+            ->assertUnprocessable()->assertJsonValidationErrors('image');
+        $this->postJson(route('admin.doctors.store'), [...$data, 'email' => 'another@example.test', 'image' => UploadedFile::fake()->image('doctor.jpg')->size(5121)])
+            ->assertUnprocessable()->assertJsonValidationErrors('image');
+        $this->assertDatabaseEmpty('doctors');
+        Storage::disk('public')->assertDirectoryEmpty('doctors');
     }
 
     public function test_unchanged_email_is_valid_and_password_changes_are_rejected(): void

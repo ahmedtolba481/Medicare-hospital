@@ -12,7 +12,12 @@
                     <tbody>
                         @foreach ($doctors as $doctor)
                             <tr>
-                                <td class="text-break">{{ $doctor->user->name }}<br><span class="small text-secondary">{{ $doctor->user->email }}</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <x-public.doctor-photo :doctor="$doctor" class="doctor-avatar-sm" />
+                                        <span class="text-break">{{ $doctor->user->name }}<br><span class="small text-secondary">{{ $doctor->user->email }}</span></span>
+                                    </div>
+                                </td>
                                 <td>{{ $doctor->department->name }}</td><td>{{ $doctor->specialization }}</td><td>{{ $doctor->appointments_count }}</td>
                                 <td><a href="{{ route('admin.doctors.edit', $doctor) }}">Edit</a>
                                     @if ($doctor->appointments_count === 0)

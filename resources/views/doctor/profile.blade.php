@@ -3,6 +3,10 @@
 @section('doctor-content')
     <div class="card app-panel p-4">
         <h2 class="h4 mb-3">Personal and professional information</h2>
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <x-public.doctor-photo :doctor="$doctor" class="doctor-avatar-sm" />
+            <div><strong>{{ $doctor->user->name }}</strong><span class="d-block text-secondary">{{ $doctor->specialization }}</span></div>
+        </div>
         <p class="text-secondary">Department: {{ $doctor->department->name }}</p>
         <form method="POST" action="{{ route('doctor.profile.update') }}" novalidate>
             @csrf

@@ -5,7 +5,7 @@
         @if ($departments->isEmpty())
             <div class="alert alert-info">Create a department before adding a doctor. <a href="{{ route('admin.departments.create') }}">Create department</a></div>
         @endif
-        <form method="POST" action="{{ $doctor ? route('admin.doctors.update', $doctor) : route('admin.doctors.store') }}" novalidate>
+        <form method="POST" action="{{ $doctor ? route('admin.doctors.update', $doctor) : route('admin.doctors.store') }}" enctype="multipart/form-data" novalidate>
             @csrf
             @if ($doctor) @method('PUT') @endif
             <div class="row g-3">
@@ -26,6 +26,21 @@
                 <x-admin.field class="col-md-6" name="experience" label="Years of experience" type="number" :value="$doctor?->experience ?? 0" :required="true" min="0" max="80" />
                 <x-admin.field class="col-12" name="education" label="Education (optional)" :value="$doctor?->education" maxlength="255" />
                 <x-admin.field class="col-12" name="bio" label="Biography (optional)" type="textarea" :value="$doctor?->bio" maxlength="5000" />
+                <div class="col-md-6">
+                    <label class="form-label" for="image">Profile image (optional)</label>
+                    <input class="form-control @error('image') is-invalid @enderror" id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp">
+                    <div class="form-text">JPG, PNG, or WebP up to 5 MB.</div>
+                    @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-6">
+                    <div class="doctor-image-preview" data-image-preview>
+                        @if ($doctor?->image)
+                            <img src="{{ \Illuminate\Support\Str::startsWith($doctor->image, ['https://', 'http://']) ? $doctor->image : \Illuminate\Support\Facades\Storage::disk('public')->url($doctor->image) }}" alt="Current profile image" width="120" height="90">
+                        @else
+                            <span class="text-secondary">No profile image selected.</span>
+                        @endif
+                    </div>
+                </div>
                 @unless ($doctor)
                     <x-admin.field class="col-md-6" name="password" label="Login password" type="password" :required="true" minlength="8" maxlength="72" autocomplete="new-password" />
                     <x-admin.field class="col-md-6" name="password_confirmation" label="Confirm password" type="password" :required="true" autocomplete="new-password" />
@@ -36,4 +51,17 @@
         </form>
         <a class="align-self-start mt-4" href="{{ route('admin.doctors.index') }}">Back to doctors</a>
     </section>
+    <script>
+        document.querySelector('#image')?.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            const preview = document.querySelector('[data-image-preview]');
+            if (!file || !preview) return;
+            const image = document.createElement('img');
+            image.alt = 'Selected profile image';
+            image.width = 120;
+            image.height = 90;
+            image.src = URL.createObjectURL(file);
+            preview.replaceChildren(image);
+        });
+    </script>
 @endsection
