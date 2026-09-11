@@ -32,6 +32,12 @@ class User extends Authenticatable
         return $this->hasMany(Appointment::class, 'patient_id');
     }
 
+    /** @return HasMany<ContactMessage, $this> */
+    public function contactMessages(): HasMany
+    {
+        return $this->hasMany(ContactMessage::class, 'patient_id');
+    }
+
     /**
      * Get the attributes that should be cast.
      *

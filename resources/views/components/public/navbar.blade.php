@@ -23,6 +23,15 @@
                 @guest
                     <li class="nav-item ms-lg-2"><a class="btn btn-outline-primary btn-sm px-3" href="{{ route('login') }}">Sign in</a></li>
                 @else
+                    @if (auth()->user()->role === 'patient')
+                        <li class="nav-item"><a class="nav-link {{ request()->routeIs('patient.*') ? 'active' : '' }}" href="{{ route('patient.dashboard') }}">My dashboard</a></li>
+                    @endif
+                    @if (auth()->user()->role === 'doctor')
+                        <li class="nav-item"><a class="nav-link {{ request()->routeIs('doctor.*') ? 'active' : '' }}" href="{{ route('doctor.dashboard') }}">Doctor dashboard</a></li>
+                    @endif
+                    @if (auth()->user()->role === 'admin')
+                        <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.*') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">Admin dashboard</a></li>
+                    @endif
                     <li class="nav-item ms-lg-2"><form method="POST" action="{{ route('logout') }}">@csrf <button class="btn btn-outline-primary btn-sm px-3" type="submit">Sign out</button></form></li>
                 @endguest
             </ul>
