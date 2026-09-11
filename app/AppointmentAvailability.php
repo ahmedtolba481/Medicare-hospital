@@ -7,7 +7,7 @@ use Carbon\CarbonImmutable;
 
 class AppointmentAvailability
 {
-    public const int DurationMinutes = 30;
+    public const DurationMinutes = 30;
 
     /** @return list<string> */
     public function slots(Doctor $doctor, string $date): array
